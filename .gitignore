@@ -1,0 +1,6 @@
+*.pyc
+*.~
+__pycache__/
+private/
+vcontrol.sublime-project
+vcontrol.sublime-workspace
