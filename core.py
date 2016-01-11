@@ -376,6 +376,12 @@ class Core:
 
         self.run_command_in_terminal(cmd)
 
+    def get_project_exclude(self, project):
+        s = ''
+        for path in project['exclude']:
+            s += ' --exclude {}'.format(path)
+        return s
+
     def deploy_go_project(self, project_id):
         project = self.get_project_by_id(project_id)
         server = self.get_server_by_id(project['server']['id'])
@@ -388,7 +394,8 @@ class Core:
         )
         self.run_command_in_subprocess(cmd)
 
-        cmd = 'rsync -avzh -e ssh {0}bin/ {1}@{2}:{3}'.format(
+        cmd = 'rsync -avzh {}'.format(self.get_project_exclude(project))
+        cmd += ' -e ssh {0}bin/ {1}@{2}:{3}'.format(
             project['project_dir_local'],
             username,
             server['main_ip'],
@@ -400,7 +407,8 @@ class Core:
         project = self.get_project_by_id(project_id)
         server = self.get_server_by_id(project['server']['id'])
 
-        cmd = 'rsync -avzh -e ssh {0} php@{1}:{2}'
+        cmd = 'rsync -avzh {}'.format(self.get_project_exclude(project))
+        cmd += ' -e ssh {0} php@{1}:{2}'
         cmd = cmd.format(
             project['project_dir_local'],
             server['main_ip'],
@@ -413,7 +421,8 @@ class Core:
         server = self.get_server_by_id(project['server']['id'])
         username = self.get_local_linux_username()
 
-        cmd = 'rsync -avzh -e ssh {0} {1}@{2}:{3}'
+        cmd = 'rsync -avzh {}'.format(self.get_project_exclude(project))
+        cmd += ' -e ssh {0} {1}@{2}:{3}'
         cmd = cmd.format(
             project['project_dir_local'],
             username,
@@ -486,7 +495,9 @@ class Core:
         cmds = []
         # copy project file excluding media directory
         ex = project['media_dir_local']
-        cmd = 'rsync -avzh --exclude {0} -e ssh {1} {2}@{3}:{4}'.format(
+
+        cmd = 'rsync -avzh {}'.format(self.get_project_exclude(project))
+        cmd += ' --exclude {0} -e ssh {1} {2}@{3}:{4}'.format(
             ex,
             project['project_dir_local'],
             username,
