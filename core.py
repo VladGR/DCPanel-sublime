@@ -181,7 +181,7 @@ class Core:
 
     def copy_control_to_server(self, server_id):
         server = self.get_server_by_id(server_id)
-        username = self.get_local_linux_username()
+        username = server['server_main_user']
 
         cmd = 'ssh {}@{} mkdir -p {} && '.format(
             username,
@@ -385,7 +385,7 @@ class Core:
     def deploy_go_project(self, project_id):
         project = self.get_project_by_id(project_id)
         server = self.get_server_by_id(project['server']['id'])
-        username = self.get_local_linux_username()
+        username = server['server_main_user']
 
         cmd = 'ssh {0}@{1} mkdir -p {2}'.format(
             username,
@@ -419,7 +419,7 @@ class Core:
     def deploy_html_project(self, project_id):
         project = self.get_project_by_id(project_id)
         server = self.get_server_by_id(project['server']['id'])
-        username = self.get_local_linux_username()
+        username = server['server_main_user']
 
         cmd = 'rsync -avzh {}'.format(self.get_project_exclude(project))
         cmd += ' -e ssh {0} {1}@{2}:{3}'
@@ -436,7 +436,7 @@ class Core:
         project = self.get_project_by_id(project_id)
         server = self.get_server_by_id(project['server']['id'])
 
-        dic = {'username': self.get_local_linux_username()}
+        dic = {'username': server['server_main_user']}
         dic['remote_dir'] = project['media_dir_server']
         dic['local_dir'] = project['project_dir_local'] \
             + project['media_dir_local'].lstrip('/')
@@ -481,7 +481,7 @@ class Core:
         """Copies files to server excluding media, touchs reload.ini"""
         project = self.get_project_by_id(project_id)
         server = self.get_server_by_id(project['server']['id'])
-        username = self.get_local_linux_username()
+        username = server['server_main_user']
 
         self.remove_pyc_files(project['project_dir_local'])
         self.remove_py_cache(project['project_dir_local'])
@@ -542,7 +542,7 @@ class Core:
         """Applies user rights on server"""
         project = self.get_project_by_id(project_id)
         server = self.get_server_by_id(project['server']['id'])
-        username = self.get_local_linux_username()
+        username = server['server_main_user']
 
         cmds = []
         cmd = 'ssh root@{0} chown -R {1}:{2} {3}'.format(
