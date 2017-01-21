@@ -242,7 +242,7 @@ class Core:
 
         sql = """
             DROP DATABASE IF EXISTS \`{dbname}\`;
-            GRANT USAGE ON *.* TO \`{username}\`;
+            GRANT USAGE ON *.* TO \`{username}\` IDENTIFIED BY 'password';
             DROP USER \`{username}\`;
             CREATE DATABASE \`{dbname}\` character set utf8 collate
              utf8_general_ci;
@@ -287,18 +287,17 @@ class Core:
         }
 
         sql = """
-            CREATE DATABASE IF NOT EXISTS \`{dbname}\` character set utf8
+            CREATE DATABASE IF NOT EXISTS {dbname} character set utf8
              collate utf8_general_ci;
-            GRANT USAGE ON *.* TO \`{username}\`;
-            DROP USER \`{username}\`;
+            DROP USER IF EXISTS {username};
             GRANT ALL PRIVILEGES
-             on \`{dbname}\`.* to \`{username}\`@'localhost'
+             on {dbname}.* to {username}@'localhost'
              identified by '{password}' with grant option;
             """.format(**dic)
 
         if db['remote_access'] is True:
             sql += """
-                GRANT ALL PRIVILEGES on \`{dbname}\`.* to \`{username}\`@'%'
+                GRANT ALL PRIVILEGES on {dbname}.* to {username}@'%'
                  identified by '{password}' with grant option;
             """.format(**dic)
 

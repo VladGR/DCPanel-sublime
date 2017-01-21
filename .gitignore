@@ -4,3 +4,5 @@ __pycache__/
 private/
 vcontrol.sublime-project
 vcontrol.sublime-workspace
+v_desit_api.py
+v_snippet.py
